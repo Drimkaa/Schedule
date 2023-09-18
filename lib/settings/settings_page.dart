@@ -22,11 +22,11 @@ class _SettingsPage extends State<SettingsPage> {
     return ListView(
         physics: const BouncingScrollPhysics(),
 
-        padding: const EdgeInsets.only(top: 100, left: 20, right: 20),
+        padding: const EdgeInsets.only(top: 32, left: 32, right: 32),
 
         children:  [
           GroupSelect(),
-          Container(height: 16),
+          Container(height: 32),
           SchemeSwitcher(),
 
         ]);

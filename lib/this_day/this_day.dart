@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:schedule/serivces/data/lesson.dart';
-import 'package:schedule/serivces/schedule.dart';
+import 'package:schedule/services/schedule.dart';
 import 'package:schedule/shared/appbar/appbar_bloc.dart';
 import 'package:schedule/theme_config.dart';
 import 'package:schedule/this_day/bloc.dart';
@@ -13,8 +11,8 @@ import 'package:schedule/this_day/sizeBloc.dart';
 import 'package:schedule/this_day/this_day_break.dart';
 import 'package:schedule/this_day/this_day_lesson.dart';
 
-import '../serivces/time.dart';
-import '../serivces/times.dart';
+import '../services/time.dart';
+import '../services/times.dart';
 import '../shared/widgets/curve_line.dart';
 
 class ThisDayPage extends StatefulWidget {
@@ -28,6 +26,7 @@ class _ThisDayPage extends State<ThisDayPage> {
   late Timer timer;
   bool condition = false;
   TimeService timeService = TimeService.instance;
+
   @override
   initState() {
     super.initState();
@@ -63,6 +62,7 @@ class _ThisDayPage extends State<ThisDayPage> {
   }
 
   List<EventTime> dayTimes = [];
+
   cancelTimer() {
     timer.cancel();
   }
@@ -114,6 +114,7 @@ class _ThisDayPage extends State<ThisDayPage> {
   }
 
   var counter = 0;
+
   getSizes(contentBlock block) {
     curveSizes[block.id] = block;
     createRoadMap();
@@ -121,11 +122,15 @@ class _ThisDayPage extends State<ThisDayPage> {
 
   var offsetList = 0.0;
   List<Widget> roadMap = [];
+
   createRoadMap() {
-    if(curveSizes.length != dayTimes.length){
+    if (curveSizes.length != dayTimes.length) {
       return;
     }
     roadMap = [];
+    var firstGradientColor =  Color(0xff33ff77);
+    var secondGradientColor =  Color(0xff33ff77);
+    List<Color> gradientColors = [Colors.white, Colors.white];
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     var lineType = "start";
@@ -138,14 +143,32 @@ class _ThisDayPage extends State<ThisDayPage> {
       color = Theme.of(context).extension<MyColors>()!.lessonCardBorder ?? Color(0xFFffffff);
 
       if (curveSizes[i] != null) {
+
+        switch (curveSizes[i]?.lessonType){
+          case "Лекция":
+            firstGradientColor = Color(0xFFdeff38);
+            break;
+          case "Практика":
+            firstGradientColor = Color(0xFF6bbfff);
+            break;
+          case "Лабораторная работа":
+            firstGradientColor = Color(0xFFFF4DB8);
+            break;
+          case "break":
+            firstGradientColor = Color(0xff33ff77);
+            break;
+
+        }
         final BuildContext? buildContext = curveSizes[i]?.key.currentContext;
         if (buildContext != null) {
           final renderObject = buildContext.findRenderObject();
           if (renderObject != null) {
+
             var firstSchedule = dayTimes[min(i, dayTimes.length - 1)];
             final RenderBox renderBox = renderObject as RenderBox;
             final path = Path();
-            double firstPosition = i == 0 ? renderBox.localToGlobal(Offset.zero).dy - 4 : renderBox.size.height / 2;
+            var viewPadding = MediaQuery.of(context).systemGestureInsets.top;
+            double firstPosition = i == 0 ? renderBox.localToGlobal(Offset.zero).dy - 4 - viewPadding : renderBox.size.height / 2;
             double firstHeight = renderBox.size.height;
             double firstLeft = renderBox.localToGlobal(Offset.zero).dx + 2;
             double firstRight = renderBox.localToGlobal(Offset.zero).dx + renderBox.size.width - 2;
@@ -155,12 +178,36 @@ class _ThisDayPage extends State<ThisDayPage> {
               path.quadraticBezierTo(offset, firstPosition, offset + borderRadius, firstPosition);
               path.lineTo(firstLeft, firstPosition);
               lineType = "right";
+              gradientColors[0] = Color(0xff33ff77);
               if (currentTime >= firstSchedule.start) {
-                color = Theme.of(context).extension<MyColors>()!.active ?? Color(0xFFffffff);
+                gradientColors[1] = firstGradientColor;
               }
-              roadMap.add(Container(width: width, height: 0, child: CustomPaint(size: Size.zero, painter: CurvePainter(path: path, color: color))));
+              else{
+                gradientColors[1] = gradientColors[1] = Theme.of(context).extension<MyColors>()!.lessonCardBorder ?? Color(0xFFffffff);
+              }
+
+              roadMap.add(Container(
+                  width: width, height: 0, child: CustomPaint(size: Size.zero, painter: CurvePainter(path: path, color: color,
+                  gradient: LinearGradient( begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,colors: [gradientColors[0], gradientColors[1]], stops:  [0.9, 1])))));
+              gradientColors[0] = firstGradientColor;
             }
             if (curveSizes[i + 1] != null) {
+
+              switch (curveSizes[i+1]?.lessonType){
+                case "Лекция":
+                  secondGradientColor = Color(0xFFdeff38);
+                  break;
+                case "Практика":
+                  secondGradientColor = Color(0xFF6bbfff);
+                  break;
+                case "Лабораторная работа":
+                  secondGradientColor = Color(0xFFFF4DB8);
+                  break;
+                case "break":
+                  secondGradientColor = Color(0xff33ff77);
+                  break;
+              }
               final BuildContext? buildContext2 = curveSizes[i + 1]?.key.currentContext;
               if (buildContext2 != null) {
                 final renderObject2 = buildContext2.findRenderObject();
@@ -196,12 +243,22 @@ class _ThisDayPage extends State<ThisDayPage> {
                     path.quadraticBezierTo(offset, secondPosition, offset + borderRadius, secondPosition);
                     path.lineTo(secondLeft, secondPosition);
                   }
-                  if (currentTime >= firstSchedule.end && currentTime >= secondSchedule.start) {
-                    color = Theme.of(context).extension<MyColors>()!.active ?? Color(0xFFffffff);
+                  if(currentTime>=firstSchedule.end){
+                    gradientColors[0] = firstGradientColor;
+                    if(currentTime>=secondSchedule.start){
+                      gradientColors[1] = secondGradientColor;
+                    } else{
+                      gradientColors[1] = Theme.of(context).extension<MyColors>()!.lessonCardBorder ?? Color(0xFFffffff);
+                    }
                   }
+                  else{
+                    gradientColors[0] = Theme.of(context).extension<MyColors>()!.lessonCardBorder ?? Color(0xFFffffff);
+                  }
+
                 }
               }
             } else if (curveSizes[i + 1] == null) {
+              gradientColors[1] = Color(0xff33ff77);
               if (lineType == "left") {
                 path.moveTo(firstLeft, 0);
                 path.lineTo(offset + borderRadius, 0);
@@ -217,9 +274,31 @@ class _ThisDayPage extends State<ThisDayPage> {
               if (currentTime >= firstSchedule.end) {
                 color = Theme.of(context).extension<MyColors>()!.active ?? Color(0xFFffffff);
               }
+              switch (curveSizes[i]?.lessonType){
+                case "Лекция":
+                  gradientColors[0] = Color(0xFFdeff38);
+                  break;
+                case "Практика":
+                  gradientColors[0] = Color(0xFF6bbfff);
+                  break;
+                case "Лабораторная работа":
+                  gradientColors[0] = Color(0xFFFF4DB8);
+                  break;
+                case "break":
+                  gradientColors[0] = Color(0xff33ff77);
+                  break;
+
+              }
             }
-            roadMap.add(
-                SizedBox(width: width, height: elementHeight, child: CustomPaint(size: Size.zero, painter: CurvePainter(path: path, color: color))));
+
+            roadMap.add(SizedBox(
+                width: width,
+                height: elementHeight,
+
+                child: CustomPaint(size: Size.zero, painter: CurvePainter(path: path, color: color,
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,colors: [gradientColors[0], gradientColors[1]], stops:  [0, 0.3])))));
           }
         }
       }
@@ -233,6 +312,7 @@ class _ThisDayPage extends State<ThisDayPage> {
   Map<int, contentBlock> curveSizesTemp = {};
   List<Widget> children = [];
   List<GlobalKey> childrenKeys = [];
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DaySchedule>(
@@ -252,39 +332,30 @@ class _ThisDayPage extends State<ThisDayPage> {
                   id: i,
                 ));
                 if (i + 1 < snapshot.data!.lessons.length) {
-                  var time = new Time(lesson.time.end, snapshot.data!.lessons[i + 1].time.start, "перемена");
+                  var time = Time(lesson.time.end, snapshot.data!.lessons[i + 1].time.start, "перерыв");
                   children.add(ThisDayBreakCard(time: time, id: i));
                 }
               }
             }
           } else if (!snapshot.hasData) {
-            children = <Widget>[
-
-            ];
+            children = <Widget>[];
           }
 
-          return ListView(
+          return SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
-            children: [
-              Stack(children: [
+            child: Stack(
+              children: [
                 Column(
                   children: <Widget>[...roadMap],
                 ),
                 Container(
                     padding: const EdgeInsets.only(top: 16, left: 32, right: 32),
                     child: Column(
-                      children: [
-                        ...children,
-                        Container(
-                          height: 82,
-                        )
-                      ],
-                    )
-                ),
-              ])
-            ],
+                      children: children,
+                    )),
+              ],
+            ),
           );
-        }
-        );
+        });
   }
 }

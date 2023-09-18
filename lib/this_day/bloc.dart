@@ -1,9 +1,9 @@
 import 'dart:async';
 
 
-final  timeBloc = timePropertiesBloc();
+final  timeBloc = TimePropertiesBloc();
 
-class timePropertiesBloc {
+class TimePropertiesBloc {
   List<StreamController<List<double>>> _lessonGradients = [];
 
 
@@ -11,9 +11,10 @@ class timePropertiesBloc {
     return _lessonGradients[id].stream;
   }
 
-  updateGradient(int id, List<double> newGradeint) {
-    if (!_lessonGradients[id].isClosed)
-      _lessonGradients[id].sink.add(newGradeint);
+  updateGradient(int id, List<double> newGradient) {
+    if (!_lessonGradients[id].isClosed) {
+      _lessonGradients[id].sink.add(newGradient);
+    }
   }
 
   add() {
@@ -23,8 +24,10 @@ class timePropertiesBloc {
   get length => _lessonGradients.length;
 
   dispose() {
-    for (var stream in _lessonGradients)
+    for (var stream in _lessonGradients) {
       stream.close();
+      stream = StreamController<List<double>>();
+    }
     _lessonGradients = [];
   }
 

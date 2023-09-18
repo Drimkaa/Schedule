@@ -33,6 +33,24 @@ class LessonSchedule{
        this.time, this.teacher,
        this.classRoom, this.day,this.group,
        );
+   static fromLesson(Lesson lesson){
+     var temp = lesson.weekIds;
+     var weeks = [];
+     for (var element in temp) {weeks.add(dataWeekList[element]);}
+     return LessonSchedule(
+         dataLessonTypeList[lesson.lessonTypeId],
+         dataObjectList[lesson.objectId],
+         dataObjectTypeList[lesson.objectTypeId],
+
+         weeks,
+         dataTimeList[lesson.timeId],
+         dataTeacherList[lesson.teacherId],
+         dataClassRoomList[lesson.classRoomId],
+         dataDayList[lesson.dayId],
+         lesson.group
+
+     );
+   }
 
 }
 class Lesson{

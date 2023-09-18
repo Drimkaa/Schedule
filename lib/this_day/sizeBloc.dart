@@ -6,9 +6,10 @@ final  sizeBloc = SizeBloc();
 
 class contentBlock{
   final String type;
+  final String lessonType;
   final int id;
   final GlobalKey key;
-  contentBlock(this.key, this.type, this.id);
+  contentBlock(this.key, this.type, this.id,this.lessonType);
 }
 
 class SizeBloc{

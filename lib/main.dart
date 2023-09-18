@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 
-import 'package:schedule/serivces/theme.dart';
-
+import 'package:schedule/services/theme.dart';
 void main() async {
-
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
 
   final themeService = await ThemeService.instance;

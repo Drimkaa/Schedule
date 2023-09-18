@@ -13,7 +13,7 @@ class AppPropertiesBloc{
   updateTitle(String pageName, [Function? func]){
     switch (pageName){
       case "Настройки":
-        _title.sink.add(SettingsAppBar);
+        _title.sink.add(SettingsAppBar());
         break;
       case "Сегодня":
         _title.sink.add(TodayAppBar());

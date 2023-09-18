@@ -1,13 +1,36 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:schedule/serivces/schedule.dart';
+import 'package:schedule/services/data/week.dart';
+import 'package:schedule/services/schedule.dart';
+import 'package:schedule/services/time.dart';
 
-Widget SettingsAppBar = AppBar(
-  title: Text("Настройки"),
-);
 
+class SettingsAppBar extends StatefulWidget {
+  const SettingsAppBar({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _SettingsAppBar();
+}
+
+class _SettingsAppBar extends State<SettingsAppBar> {
+  @override
+  initState() {
+    super.initState();
+    init();
+  }
+
+  init() async {}
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+      title: Text("Настройки"),
+    );
+  }
+}
 class TodayAppBar extends StatefulWidget {
   const TodayAppBar({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _TodayAppBar();
 }
@@ -32,14 +55,14 @@ class _TodayAppBar extends State<TodayAppBar> {
               width: 16,
               height: 16,
               decoration: BoxDecoration(
-                color: Color(0xFF00FFCC),
+                color: Color(0xFF6bbfff),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
             Container(width: 8),
             Text(
               "Практика".toUpperCase(),
-              style: TextStyle(color: Color(0xFF00FFCC), fontWeight: FontWeight.w700, fontSize: 12),
+              style: TextStyle(color: Color(0xFF6bbfff), fontWeight: FontWeight.w700, fontSize: 12),
             )
           ],
         ),
@@ -49,14 +72,14 @@ class _TodayAppBar extends State<TodayAppBar> {
               width: 16,
               height: 16,
               decoration: BoxDecoration(
-                color: Color(0xff345cef),
+                color: Color(0xff33ff77),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
             Container(width: 8),
             Text(
               "перерыв".toUpperCase(),
-              style: TextStyle(color: Color(0xff345cef), fontWeight: FontWeight.w700, fontSize: 12),
+              style: TextStyle(color: Color(0xff33ff77), fontWeight: FontWeight.w700, fontSize: 12),
             )
           ],
         ),
@@ -66,14 +89,14 @@ class _TodayAppBar extends State<TodayAppBar> {
               width: 16,
               height: 16,
               decoration: BoxDecoration(
-                color: Color(0xFFD0FF00),
+                color: Color(0xFFdeff38),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
             Container(width: 8),
             Text(
               "Лекция".toUpperCase(),
-              style: TextStyle(color: Color(0xFFD0FF00), fontWeight: FontWeight.w700, fontSize: 12),
+              style: TextStyle(color: Color(0xFFdeff38), fontWeight: FontWeight.w700, fontSize: 12),
             )
           ],
         ),
@@ -83,18 +106,17 @@ class _TodayAppBar extends State<TodayAppBar> {
               width: 16,
               height: 16,
               decoration: BoxDecoration(
-                color: Color(0xFFFF00A1),
+                color: Color(0xFFFF4DB8),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
             Container(width: 8),
             Text(
-              "лаба".toUpperCase(),
-              style: TextStyle(color: Color(0xFFFF00A1), fontWeight: FontWeight.w700, fontSize: 12),
+              "лаб.раб".toUpperCase(),
+              style: TextStyle(color: Color(0xFFFF4DB8), fontWeight: FontWeight.w700, fontSize: 12),
             )
           ],
         ),
-
       ]),
     );
   }
@@ -103,14 +125,16 @@ class _TodayAppBar extends State<TodayAppBar> {
 class ScheduleAppBar extends StatefulWidget {
   ScheduleAppBar({Key? key, Function? this.press}) : super(key: key);
   Function? press;
+
   @override
   State<StatefulWidget> createState() => _ScheduleAppBar();
 }
 
 class _ScheduleAppBar extends State<ScheduleAppBar> {
   late ScheduleService scheduleService;
-  var weekNumber = 0;
-  var weekType = "";
+  final TimeService _timeService = TimeService.instance;
+  late Week week = _timeService.week;
+
   @override
   initState() {
     super.initState();
@@ -120,60 +144,66 @@ class _ScheduleAppBar extends State<ScheduleAppBar> {
   init() async {
     scheduleService = await ScheduleService.instance;
     setState(() {
-      weekNumber = scheduleService.weekNumber;
-      weekType = scheduleService.weekType;
+      week = _timeService.week;
     });
   }
 
-
-
   lastWeek() {
     setState(() {
-      weekNumber -= 1;
-      weekType = scheduleService.weekTypeByNumber(weekNumber);
+      week = _timeService.weekByNumber(week.number - 1);
     });
     if (widget.press != null) {
-      widget.press!(weekNumber);
+      widget.press!(week);
     }
   }
 
   nextWeek() {
     setState(() {
-      weekNumber += 1;
-      weekType = scheduleService.weekTypeByNumber(weekNumber);
+      week = _timeService.weekByNumber(week.number + 1);
     });
     if (widget.press != null) {
-      widget.press!(weekNumber);
+      widget.press!(week);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-        title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text(weekType, style: Theme.of(context).textTheme.headlineMedium),
-      Row(
+      backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            onPressed: () => lastWeek(),
-            icon: const Icon(Icons.chevron_left_rounded),
-            splashRadius: 30,
+          Text(
+            week.type,
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
-          Container(
-            width: 16,
-          ),
-          Text(weekNumber.toString() + " неделя", style: Theme.of(context).textTheme.headlineMedium),
-          Container(
-            width: 16,
-          ),
-          IconButton(
-            onPressed: () => nextWeek(),
-            icon: const Icon(Icons.chevron_right_rounded),
-            splashRadius: 30,
+          Row(
+            children: [
+              IconButton(
+                onPressed: () => lastWeek(),
+                icon: const Icon(Icons.chevron_left_rounded),
+                splashRadius: 30,
+              ),
+              Container(
+                width: 16,
+              ),
+              Text(
+                "${week.number} неделя",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              Container(
+                width: 16,
+              ),
+              IconButton(
+                onPressed: () => nextWeek(),
+                icon: const Icon(Icons.chevron_right_rounded),
+                splashRadius: 30,
+              ),
+            ],
           ),
         ],
-      )
-    ]));
+      ),
+    );
   }
 }
