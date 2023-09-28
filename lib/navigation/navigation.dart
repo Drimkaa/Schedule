@@ -5,6 +5,7 @@ import 'package:schedule/schedule/schedule_page.dart';
 import 'package:schedule/settings/settings_page.dart';
 import 'package:schedule/shared/appbar/appbar_bloc.dart';
 import 'package:schedule/this_day/this_day.dart';
+import 'package:schedule/today/today_page.dart';
 
 class NavigationWrapper extends StatefulWidget {
   const NavigationWrapper({super.key});
@@ -30,7 +31,7 @@ class _NavigationWrapper extends State<NavigationWrapper> with SingleTickerProvi
   int _lastIndex = 0;
   static final List<Widget> _widgetOptions = <Widget>[
     SchedulePage(),
-    ThisDayPage(),
+    TodayPage(),
     SettingsPage(),
   ];
 
@@ -116,14 +117,20 @@ class _NavigationWrapper extends State<NavigationWrapper> with SingleTickerProvi
                       label: 'Расписание',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(
-                        Icons.linear_scale_rounded,
-                        size: 40,
-                      ),
+                      icon:
+                        //Icons.linear_scale_rounded,
+                        //Icons.grain_outlined,
+                      //Icons.auto_graph_rounded,
+                        RotatedBox(
+                          quarterTurns: 1,
+                          child: Icon(
+                        Icons.cable_rounded,
+                        size: 32,
+                      )),
                       label: 'Сегодня',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(
+                      icon:  Icon(
                         Icons.settings,
                         size: 32,
                       ),

@@ -57,6 +57,7 @@ class _BlockLine extends State<BlockLine> {
     double secondPosition = fBlock.size.height / 2 + sBlock.size.height / 2 + 8;
     double secondRight = sBlock.offset.dx + sBlock.size.width - 2;
     double secondLeft = sBlock.offset.dx + 2;
+    print(fBlock.size.toString());
     if (lineDirection == "right") {
 
       setState(() {
@@ -100,6 +101,7 @@ class _BlockLine extends State<BlockLine> {
         if(startListener == false){
           startListener = true;
           sBlock.decor.addListener(() {
+            print("изменил размер");
             changePath(fBlock, sBlock);
           });
         }

@@ -8,11 +8,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 export 'data/lesson.dart';
 
 class ScheduleService {
-  ScheduleService._();
+
   static late SharedPreferences prefs;
-  static ScheduleService? _instance;
-  static final TimeService _timeService = TimeService.instance;
   static late GroupService _groupService;
+  static final TimeService _timeService = TimeService.instance;
+
+  ScheduleService._();
+  static ScheduleService? _instance;
+
   static Future<ScheduleService> get instance async {
     if (_instance == null) {
       prefs = await SharedPreferences.getInstance();
@@ -34,7 +37,6 @@ class ScheduleService {
     for(int i = 0; i < 7;i++){
       days.add(DaySchedule(i, []));
     }
-
     var tempLessons = dataLessonList;
     for(final lesson in tempLessons){
       LessonSchedule lessonSchedule = LessonSchedule.fromLesson(lesson);

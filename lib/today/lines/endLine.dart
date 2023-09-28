@@ -60,6 +60,10 @@ class _EndLine extends State<EndLine> {
         path.lineTo(width - offset, height - firstPosition + height);
       });
     }
+    setState(() {
+      height =height - firstPosition;
+    });
+
 
 
   }

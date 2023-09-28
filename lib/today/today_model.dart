@@ -54,7 +54,7 @@ class BlockDecoration with ChangeNotifier {
   final BlockSize _block = BlockSize();
   BlockSize get block => _block;
   set block(BlockSize block) {
-    if(_block.size != block.size && _block.offset != block.offset){
+    if(_block.size != block.size || _block.offset != block.offset){
       _block.size = block.size;
       _block.offset = block.offset;
       print("${_block.offset.toString()} ${_block.size.toString()} ");
