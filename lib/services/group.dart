@@ -1,3 +1,5 @@
+
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GroupService {
@@ -8,22 +10,35 @@ class GroupService {
   static Future<GroupService> get instance async {
     if (_instance == null) {
       prefs = await SharedPreferences.getInstance();
+
       _instance = GroupService._();
     }
     return _instance!;
   }
 
-  int get group {
-    int? gr = prefs.getInt('scheduleGroup');
+  int get subgroup {
+    int? gr = prefs.getInt('scheduleSubgroup');
     if(gr!=null) {
       return gr;
     } else{
       return 1;
     }
   }
-  set group(int value){
-    prefs.setInt('scheduleGroup',value);
+  set subgroup(int value){
+    prefs.setInt('scheduleSubgroup',value);
+  }
+  String get group {
 
+    String? gr = prefs.getString('scheduleGroup');
+
+    if(gr!=null) {
+      return gr;
+    } else{
+      return "21-СТ";
+    }
+  }
+  set group(String value){
+    prefs.setString('scheduleGroup',value);
   }
 
 }

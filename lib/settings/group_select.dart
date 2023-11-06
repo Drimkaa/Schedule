@@ -21,12 +21,12 @@ class _GroupSelect extends State<GroupSelect> {
   init() async {
     _groupService = await GroupService.instance;
     setState(() {
-      value = _groupService.group;
+      value = _groupService.subgroup;
     });
   }
 
   changeGroup(int index) async {
-    _groupService.group = index;
+    _groupService.subgroup = index;
     setState(() {
       value = index;
     });

@@ -2,6 +2,8 @@
 
 import 'package:schedule/services/data/week.dart';
 
+import 'data/lesson2.dart';
+
 class TimeService {
   TimeService._();
   static TimeService? _instance;
@@ -14,9 +16,29 @@ class TimeService {
     return DateTime.now().add( Duration(hours: 3));
   }
 
-  get day {
-    print(currentTime.weekday);
+   get day {
+
     return currentTime.weekday;
+  }
+  Weekday get weekday {
+    var temp = day;
+    switch (temp){
+      case 1:
+        return Weekday.monday;
+      case 2:
+        return Weekday.tuesday;
+      case 3:
+        return Weekday.wednesday;
+      case 4:
+        return Weekday.thursday;
+      case 5:
+        return Weekday.friday;
+      case 6:
+        return Weekday.saturday;
+      case 7:
+        return Weekday.sunday;
+    }
+    return Weekday.monday;
   }
   get currentWeek {
     return weekNumber;

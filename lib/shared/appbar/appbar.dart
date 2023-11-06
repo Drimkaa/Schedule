@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:schedule/services/data/week.dart';
 import 'package:schedule/services/schedule.dart';
@@ -150,7 +152,7 @@ class _ScheduleAppBar extends State<ScheduleAppBar> {
 
   lastWeek() {
     setState(() {
-      week = _timeService.weekByNumber(week.number - 1);
+      week = _timeService.weekByNumber(max(week.number - 1,0));
     });
     if (widget.press != null) {
       widget.press!(week);

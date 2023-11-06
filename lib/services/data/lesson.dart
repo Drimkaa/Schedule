@@ -15,7 +15,6 @@ class DaySchedule{
   addLesson(LessonSchedule lesson){
     this.lessons.add(lesson);
   }
-
 }
 class LessonSchedule{
    String lessonType; //очно/дист

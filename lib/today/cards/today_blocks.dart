@@ -125,7 +125,7 @@ class _TodayBlocks extends State<TodayBlocks> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("🤙",style: Theme.of(context).textTheme.displayLarge),
-                  Text("Сегодня чилл!!", style: Theme.of(context).textTheme.displayMedium),
+                  Text("чилл!!", style: Theme.of(context).textTheme.displayMedium),
                 ],
               )),
         );

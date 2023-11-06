@@ -127,7 +127,6 @@ class ScheduleBlock with ChangeNotifier {
       _status = st;
       notifyListeners();
     }
-
   }
   final Timing timing;
   late LessonSchedule lesson;
@@ -166,7 +165,7 @@ class TodayColors {
         case "Лекция":
           return Colors.black;
         case "Практика":
-          return Colors.black ;
+          return Colors.black;
         case "Лабораторная работа":
           return Colors.black;
         case "break":

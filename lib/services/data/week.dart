@@ -4,7 +4,7 @@ class Week {
   late int _typeId;
   get typeId => _typeId;
   get number => _number;
-  get type => _type;
+  String get type => _type;
   Week({required int number,String ? type, int? typeId}){
     _number = number;
     _type = number%2 == 0? "Четная" :  "Нечётная";

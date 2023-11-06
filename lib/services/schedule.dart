@@ -31,7 +31,7 @@ class ScheduleService {
 
   localSchedule(Week currentWeek) async{
 
-    int group = _groupService.group;
+    int group = _groupService.subgroup;
 
     List<DaySchedule> days = [];
     for(int i = 0; i < 7;i++){
@@ -51,7 +51,7 @@ class ScheduleService {
   }
   Future<DaySchedule> localThisDaySchedule() async {
     Week currentWeek = _timeService.week;
-    int group = _groupService.group;
+    int group = _groupService.subgroup;
     int currentDay = _timeService.day - 1;
 
     var thisDaySchedule =  DaySchedule(currentDay, []);
